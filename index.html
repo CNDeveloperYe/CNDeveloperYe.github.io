@@ -250,6 +250,122 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/23/URL和Path的区别和联系/" itemprop="url">
+                  URL和Path的区别和联系
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-23T10:51:43+08:00" content="2016-11-23">
+              2016-11-23
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>URL和Path的<mark>区别和联系</mark></p>
+<p>相同:都是表示资源的路径</p>
+<p>URL:第一部分必须为协议名字</p>
+<pre><code>1.http／https：超文本传输协议
+2.file:本地或者网上分享的文件(局域网)
+</code></pre><p>filePath:默认的采用了file协议，转化为URL时可以采用手动或者系统的方法加上 <mark>“file://“</mark></p>
+<ul>
+<li><p><a href="#first">写法一</a></p>
+<pre><code>let ulrString = &quot;http://image.tianjimedia.com/uploadImages/upload/20161030/ybblbgljviljpg.jpg&quot;
+let url = URL(string: ulrString)
+</code></pre></li>
+<li><p><a href="#second">写法二</a></p>
+<pre><code>let localPathString = &quot;file://&quot; + &quot;/Users/yeguixian/YeGuixianBlog/source/_posts/Unknown.jpg&quot;
+ let url = URL(string: localPathString)
+</code></pre></li>
+<li><p><a href="#third">写法三</a></p>
+<pre><code>let localPathString = &quot;/Users/yeguixian/YeGuixianBlog/source/_posts/Unknown.jpg&quot;
+ let url = URL(fileURLWithPath: localPathString)
+</code></pre></li>
+</ul>
+<h2 id="1-效果"><a href="#1-效果" class="headerlink" title="1.效果"></a><a name="first"></a>1.效果</h2><p><img src="http://image.tianjimedia.com/uploadImages/upload/20161030/ybblbgljviljpg.jpg" alt=""></p>
+<p>##<a name="second"></a>2.效果<br><img src="file:///Users/yeguixian/Desktop/Tool/Unknown.jpg" alt=""></p>
+<p>##<a name="third"></a>3.效果<br><img src="/Users/yeguixian/Desktop/Tool/Unknown.jpg" alt=""></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/08/06/hexo教程/" itemprop="url">
                   hexo教程
                 </a>
@@ -476,7 +592,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-count">3</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

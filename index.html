@@ -250,6 +250,217 @@
             
               
                 
+                <a class="post-title-link" href="/2016/12/02/下拉选择/" itemprop="url">
+                  下拉选择
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-02T13:40:50+08:00" content="2016-12-02">
+              2016-12-02
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###需求描述</p>
+<ul>
+<li>点击某一行时，在该行的下方弹出一个pickView，选择完成之后，再次点击该行收回.</li>
+</ul>
+<p>###做法</p>
+<ul>
+<li>1.将列表中左边显示的文字都提取到一个titleArr中,同时定义展开的标记的字符串<a href="#1">代码</a></li>
+<li><p>2.点击某一行时，需要判断当前的titleArr是否存在一个展开的标记的字符串<a href="#2">代码</a>    </p>
+<pre><code>存在：说明有展开，获取该标记的位置，tableView中删除该位置的cell，数组中也同时移除。
+不存在：数组中根据当前点击的位置+1，然后添加一个展开的标记的字符串，tableView中添加该位置的cell
+</code></pre></li>
+<li><p>3.cellForRowAtindexPath的方法中，titleArr数组中依次展示cell，如果有展开的标记的字符串<a href="#3">代码</a></p>
+<pre><code>根据展开的标记的字符串的位置-1，获取需要设置 选择文字的cell，如果该cell没有文字则给一个默认的文字。
+当展开cell选择完成之后，将选择的结果赋值给相应的cell
+</code></pre></li>
+<li>4 高度的调整<a href="#4">代码</a></li>
+<li>5 效果图<a href="#5">效果</a></li>
+</ul>
+<p>####<a name="1"></a>代码1</p>
+<pre><code>let enpandingMark = &quot;expend&quot;
+
+var nameArr = [&quot;我&quot;,&quot;是&quot;,&quot;帅&quot;,&quot;哥&quot;,&quot;！&quot;]
+
+var titleArr = [&quot;我帅&quot;,&quot;我比较帅&quot;,&quot;我比别人帅&quot;,&quot;别人没我帅&quot;]
+</code></pre><p>####<a name="2"></a>代码2</p>
+<pre><code>func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+    //检测当前有没有已经展开的
+    let isEnpending = self.nameArr.contains(enpandingMark)
+
+    if isEnpending {//如果展开,则回收
+
+        //获取之前展开的位置
+        let index = self.nameArr.index(of: enpandingMark)!
+        //关闭掉
+        nameArr.remove(at: index)
+
+        let indexPath = IndexPath(row: index, section: 0)
+        //删除某一个cell
+        tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.none)
+
+    }else{
+
+        //没有展开cell
+        nameArr.insert(enpandingMark, at: indexPath.row + 1)
+
+        let indexPath = IndexPath(row: indexPath.row + 1, section: 0)
+
+        //添加某一个新的cell
+        tableView.insertRows(at: [indexPath], with: UITableViewRowAnimation.none)
+
+    }
+
+}
+</code></pre><p>####<a name="3"></a>代码3</p>
+<pre><code>   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
+
+    var cell =  tableView.dequeueReusableCell(withIdentifier: &quot;reuse&quot;)
+
+    if cell == nil {
+
+       cell = UITableViewCell(style: UITableViewCellStyle.value1, reuseIdentifier: &quot;reuse&quot;)
+    }
+
+    cell?.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+
+    cell?.textLabel?.text = nameArr[indexPath.row]
+
+    //有展开的
+    if self.nameArr[indexPath.row] ==  enpandingMark{
+
+        //获取之前展开的位置
+        let index = self.nameArr.index(of: enpandingMark)!
+
+        let indexPath = IndexPath(row: index - 1, section: 0)
+
+        //获取需要改变标题的cell
+        let changeCell = tableView.cellForRow(at: indexPath)
+
+        //第一次给个默认值
+        if changeCell?.detailTextLabel?.text == nil {
+
+            changeCell?.detailTextLabel?.text = titleArr.first
+        }
+
+        //根据需要改变标题的cell里面的文字来旋转CustChooseCell 转到那个位置
+        let title = changeCell?.detailTextLabel?.text ?? titleArr.first!
+
+        let selectIndex = titleArr.index(of: title)
+
+        cell = Bundle.main.loadNibNamed(&quot;CustChooseCell&quot;, owner: nil, options: nil)?.last as! CustChooseCell
+
+        let custChooseCell = cell as! CustChooseCell
+
+        custChooseCell.titleArr = titleArr
+
+        //选中标题中已经选择的位置
+        custChooseCell.pickerView.selectRow(selectIndex!, inComponent: 0, animated: false)
+
+        custChooseCell.chooseTheTitle = { title in
+
+            changeCell?.detailTextLabel?.text = title
+        }
+    }
+
+    return cell!
+}
+</code></pre><p>####<a name="4"></a>代码4<br>        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -&gt; CGFloat {</p>
+<pre><code>    let title = self.nameArr[indexPath.row]
+
+    if title == enpandingMark{
+
+        return 80
+    }
+
+    return 44
+}
+</code></pre><p>####<a name="5"></a>效果<br><img src="http://a1.qpic.cn/psb?/V10TQWnW2OQJgU/Q3AK.CRw8n8j4.trkA1McogpmSn*TpbPxDiKFUqWLZs!/b/dK4AAAAAAAAA&amp;bo=FAEKAgAAAAACVWw!&amp;rf=viewer_4" alt=""></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/23/URL和Path的区别和联系/" itemprop="url">
                   URL和Path的区别和联系
                 </a>
@@ -592,7 +803,7 @@ let url = URL(string: ulrString)
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-count">4</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
